@@ -18,6 +18,10 @@ export const authSlice = createSlice({
             state.user = payload;
             state.errorMessage =  undefined;
         },
+        onloadUser: ( state )=>{
+            state.status = 'authenticated';
+            state.user = JSON.parse( localStorage.getItem('usuario') )
+        },
         onLogout:( state, { payload } )=>{
             state.status = 'no-authenticated';
             state.user = {};
@@ -36,4 +40,5 @@ export const {
     onChecking,
     onLogin,
     onLogout,
+    onloadUser
 } = authSlice.actions;

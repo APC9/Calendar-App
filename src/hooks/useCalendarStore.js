@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import Swal from "sweetalert2";
 import { calendarApi } from "../api";
 import { convertEventsToDateEvents } from "../helpers";
-import { onAddNewEvent, onDeleteEvent, onLoadEvents, onSetActiveEvent, onUpdateEvent } from "../store";
+import { onAddNewEvent, onDeleteEvent, onLoadEvents, onloadUser, onSetActiveEvent, onUpdateEvent } from "../store";
 
 
 
@@ -42,7 +42,15 @@ export const useCalendarStore = () => {
 
     const startDeletingEvent = async( )=>{
 
-        dispatch( onDeleteEvent() )
+        try {
+        
+            await calendarApi.delete(`/events/${ activeEvent.id }`) 
+            dispatch( onDeleteEvent())
+            
+        } catch (error) {
+            console.log( error )
+            Swal.fire('Error al eliminar', error.response.data.msg, 'error')
+        }
     }
 
     const startLoadingEvents = async()=>{
@@ -52,6 +60,7 @@ export const useCalendarStore = () => {
             const { data }= await calendarApi.get('/events');
             const events = convertEventsToDateEvents( data.eventos );
             dispatch( onLoadEvents( events ) )
+            dispatch( onloadUser())
         } catch (error) {
             console.log('Error cangando error')  
             console.log( error )
